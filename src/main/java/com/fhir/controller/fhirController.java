@@ -63,10 +63,10 @@ public class fhirController {
         System.setProperty("https.protocol", "TLSv1.2,TLSv1.1,TLSv1");
 
         String input = "{\"resourceType\":\"EligibilityRequest\",\"patient\":{\"reference\":\"Patient\\/" + id + "\"}}";
-        JSONObject requests = new JSONObject();
-        requests.put("resourceType", "EligibilityRequest");
+//        JSONObject requests = new JSONObject();
+//        requests.put("resourceType", "EligibilityRequest");
 
-        System.out.print(requests.toString());
+//        System.out.print(requests.toString());
         RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
         HttpHeaders headers = new HttpHeaders();
 //        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
@@ -87,6 +87,92 @@ public class fhirController {
         model.setViewName("fhir");
         model.addObject("output", answer);
         model.addObject("input", input);
+        return model;
+    }
+    
+    
+      @RequestMapping(value = "/Patient", method = RequestMethod.POST)
+    public ModelAndView viewPatient(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+//        SSLUtil.turnOffSslChecking();
+        System.out.print("Inside view Patient");
+        String id = request.getParameter("insuree_id");
+        String uri = Constants.api_endpoint + "/api/api_fhir/Patient/";
+        System.setProperty("https.protocol", "TLSv1.2,TLSv1.1,TLSv1");
+
+             RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.set("Content-Type", "application/json");
+        headers.set("remote-user", "openimis");
+           String input = "";
+            HttpEntity<String> entity;
+        if(!id.isEmpty())
+        {
+       input = "{\"resourceType\":\"EligibilityRequest\",\"patient\":{\"reference\":\"Patient\\/" + id + "\"}}";
+       entity = new HttpEntity<String>(input, headers);
+        }
+         else
+        {
+       entity = new HttpEntity<String>( headers);
+        }
+        String answer = "";
+        try {
+            ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+            answer = result.toString();
+//            answer = restTemplate.postForObject(uri, entity, String.class);
+        } catch (Exception ex) {
+            answer = ex.toString();
+        }
+
+        System.out.print("Insuree id is " + answer);
+        ModelAndView model = new ModelAndView();
+        model.setViewName("fhir");
+        model.addObject("output_patient", answer);
+        model.addObject("input_patient", input);
+        return model;
+    }
+    
+    
+      @RequestMapping(value = "/Location", method = RequestMethod.POST)
+    public ModelAndView viewLocation(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException, KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
+//        SSLUtil.turnOffSslChecking();
+        System.out.print("Inside view Patient");
+        String id = request.getParameter("insuree_id");
+        String uri = Constants.api_endpoint + "/api/api_fhir/Location/";
+        System.setProperty("https.protocol", "TLSv1.2,TLSv1.1,TLSv1");
+
+             RestTemplate restTemplate = new RestTemplate(getClientHttpRequestFactory());
+        HttpHeaders headers = new HttpHeaders();
+//        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.set("Content-Type", "application/json");
+        headers.set("remote-user", "openimis");
+           String input = "";
+            HttpEntity<String> entity;
+        if(!id.isEmpty())
+        {
+       input = "{\"resourceType\":\"EligibilityRequest\",\"patient\":{\"reference\":\"Patient\\/" + id + "\"}}";
+       entity = new HttpEntity<String>(input, headers);
+        }
+         else
+        {
+       entity = new HttpEntity<String>( headers);
+        }
+        String answer = "";
+        try {
+            ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+            answer = result.toString();
+//            answer = restTemplate.postForObject(uri, entity, String.class);
+        } catch (Exception ex) {
+            answer = ex.toString();
+        }
+
+        System.out.print("Insuree id is " + answer);
+        ModelAndView model = new ModelAndView();
+        model.setViewName("fhir");
+        model.addObject("output_location", answer);
+        model.addObject("input_location", input);
         return model;
     }
 
